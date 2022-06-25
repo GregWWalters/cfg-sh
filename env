@@ -1,7 +1,10 @@
 # vim:ft=sh
 
 # Store sensitive values like API tokens in .secrets
-secrets="${HOME}/.config/sh/.secrets"
+if [ -n "$XDG_CONFIG_HOME" ]; then
+	XDG_CONFIG_HOME="${HOME}/.config"
+fi
+secrets="${XDG_CONFIG_HOME}/sh/.secrets"
 if [ -s "$secrets" ]; then source "$secrets"; fi
 
 export GPG_TTY=`tty`
