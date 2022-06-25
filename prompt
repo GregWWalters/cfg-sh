@@ -1,0 +1,24 @@
+#! /bin/sh
+# vim:ft=sh
+
+# Git
+source "${HOME}/.config/git/git-prompt.sh"
+thisShell=$(ps -o args= -p $$ | grep -m 1 -o -E '\w{0,5}sh')
+
+case $thisShell in
+	bash)
+		source "$HOME/.config/bash/prompt"
+		;;
+	zsh)
+		source "$HOME/.config/zsh/prompt"
+		;;
+	sh)
+		# do nothing
+		;;
+	\?)
+		echo "unregognized shell \"$thisShell\""
+		;;
+esac
+
+
+

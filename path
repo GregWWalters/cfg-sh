@@ -1,0 +1,14 @@
+# PATH additions
+
+export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/opt/make/libexec/gnubin:$PATH" #gnu binaries
+export PATH="$PATH:$HOME/bin" # user binaries
+export PATH="$PATH:$HOME/.config/git/funcs" # git functions
+export PATH="/usr/local/opt/python/libexec/bin:$PATH" # Brew-installed Python
+export PATH="$PATH:/Library/TeX/Root/bin/x86_64-darwin" # LaTeX tools
+export PATH="$HOME/.cargo/bin:$PATH" # Rust
+export PATH="$HOME/go/bin:$PATH" # Go bins
+export PATH="$HOME/.cargo/bin:$PATH" # Rust bins
+
+# vim:ft=sh

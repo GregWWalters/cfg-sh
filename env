@@ -1,0 +1,28 @@
+# vim:ft=sh
+
+# Store sensitive values like API tokens in .secrets
+secrets="${HOME}/.config/sh/.secrets"
+if [ -s "$secrets" ]; then source "$secrets"; fi
+
+export GPG_TTY=`tty`
+export VISUAL=vim
+export EDITOR=vim
+
+# BROWSER
+export BROWSER=lynx
+export LYNX_CFG=~/.config/lynx/lynx.cfg
+# export RTV_BROWSER=/Applications/Firefox.app
+
+# Set GO variables
+export GOPATH="${HOME}/go"
+export GOPRIVATE=github.com/parkhub/*
+
+# Kubernetes
+export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
+
+# Set Node Version Manager home
+if [ -z ${XDG_CONFIG_HOME+x} ]
+	then export NVM_DIR="${HOME}/.nvm"
+	else export NVM_DIR="${XDG_CONFIG_HOME}/nvm"
+fi
+

@@ -1,0 +1,127 @@
+#! /bin/sh
+
+function shellquote {
+	printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
+}
+
+function testInteger {
+	[ -n "$1" -a  "$1" -eq "$1" ] 2>/dev/null
+}
+
+function termWidth {
+	if command tput &>/dev/null; then
+		w=$(tput cols)
+	elif command stty &>/dev/null; then
+		w=$(stty size | cut -w -f2)
+	else
+		return 1
+	fi
+	echo $w
+}
+
+function indent {
+	if testInteger $1; then space=$1; shift; else space=0; fi
+	if testInteger $1; then width=$1; shift; else p="$*"; width=${#p}; fi
+	[ $# -gt 0 ] && echo $@ | fold -s -w $width | pr -to $space
+}
+
+cmdfu()
+{
+	curl "http://www.commandlinefu.com/commands/matching/$@/$(echo -n $@ \
+		| openssl base64)/YXdr/plaintext" --silent \
+		| sed "s/\(^#.*\)/\x1b[32m\1\x1b[0m/g" \
+		| less -R
+}
+
+
+google() {
+	lynx -accept-all-cookies "https://www.google.com/search?q=${*// /%20}"
+}
+
+wiki() {
+	lynx -accept-all-cookies "http://en.wikipedia.org/wiki/Special:Search?search=${*// /+}"
+}
+
+histhist() {
+	history \
+		| awk '{print $2}' \
+		| sort | uniq -c \
+		| sort -rn | head -20 \
+		| awk '!max{max=$1;}{r="";i=s=60*$1/max;while(i-->0)r=r"#";printf "%15s %5d %s %s",$2,$1,r,"\n";}'
+}
+
+csview() {
+	local file="$1"
+	cat "$file" | sed -e 's/,,/, ,/g' | column -s, -t | less -#5 -N -S
+}
+
+title() {
+	name="$*"
+	export PROMPT_COMMAND="echo -ne \"\\033]0;$name\\007\""
+}
+
+findOnPort() (
+	function joinWithDelim {
+		if [ $# -lt 3 ]; then print "$2"; return 0; fi
+		local d=${1-} f=${2-}
+		if shift 2; then
+			printf %s "$f" "${@/#/$d}"
+		fi
+	}
+
+	function processPairs {
+		local -r columnsRE='^ *([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +(.+?) *$'
+		local -a tuple
+		echo "Port;PID;User;Started;Command"
+		for pair in "$@"; do
+			tuple=($(echo "$pair" | tr ':' ' '))
+			port="${tuple[@]:0:1}"
+			pid="${tuple[@]:1:1}"
+			echo "${port} $(ps -o pid,logname,start,command -p "$pid" | tail -n +2)" \
+			| gsed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
+		done
+	}
+
+	local -a ports=( 80 8080 443 '300[0-9]' 3030 )
+	if [ $# -gt 0 ]; then ports=( "$@" ) fi
+	local -r search=$(joinWithDelim '|' $ports)
+	local -r portsRE="\.(${search})$"
+
+	# Get matched ports in use and the PIDs using them as <PORT>:<PID>
+	local -a pairs
+	OIFS=$IFS
+	IFS=$'\n' pairs=($( \
+		netstat -vanp tcp \
+		| gawk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" \
+	))
+	IFS=$OIFS
+
+	# Exit here if no searched ports are in use
+	if [ ${#pairs[@]} -eq 0 ]; then
+		echo "No processes found on port(s) $(joinWithDelim ", " $ports)"
+		return 0
+	fi
+
+	# Print the process information per port
+	# (may repeat processes if a process is listening on multiple ports)
+	processPairs $pairs | column -s=';' -t
+) # FIXME: syntax error near unexpected token `)'
+
+function delete-orig {
+	find . -type f -name '*.orig' -delete
+}
+
+function git-is-merged-into {
+	git merge-base --is-ancestor ${1} ${2} && echo "${1} merged into ${2}" || echo "${1} not merged into ${2}"
+}
+
+# Provides the remote's default branch
+function git-remote-default {
+	git remote show ${1:-origin} \
+		| grep 'HEAD' \
+		| cut -d':' -f2 \
+		| sed -e 's/^ *//g' -e 's/ *$//g'
+}
+
+
+# vim: ft=sh

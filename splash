@@ -1,0 +1,14 @@
+#! /bin/sh
+# ASCII art splash screen to be loaded after .bashrc
+
+art_dir="${HOME}/Documents/ASCII_art"
+
+if [ -d $art_dir ]; then
+	art=$(ls $art_dir | gsort -R | tail -1)
+	echo ""
+	cat "$art_dir/$art"
+	echo ""
+	echo ""
+fi
+
+# vim:ft=sh
