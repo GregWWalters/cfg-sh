@@ -18,7 +18,7 @@ export LYNX_CFG=~/.config/lynx/lynx.cfg
 
 # Set GO variables
 export GOPATH="${HOME}/go"
-export GOPRIVATE=github.com/parkhub/*
+export GOPRIVATE=github.com/parkhub/*,github.com/gregwwalters/*
 
 # Kubernetes
 export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config

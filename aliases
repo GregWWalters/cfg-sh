@@ -1,6 +1,8 @@
 # vim:ft=sh
 
 # Aliases
+
+# dotfiles git alias
 alias cfg='/usr/bin/env git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'
 
 alias ls='gls -ALhFXh --color'       # use GNU ls, classify files in colour, sort by type

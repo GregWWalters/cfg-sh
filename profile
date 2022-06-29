@@ -1,7 +1,7 @@
 # vim:ft=sh
 
 # Set config dir
-if [ -n "$XDG_CONFIG_HOME" ]; then
+if [ -z "$XDG_CONFIG_HOME" ]; then
 	XDG_CONFIG_HOME="${HOME}/.config"
 fi
 sh_config="${XDG_CONFIG_HOME}/sh"
