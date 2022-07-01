@@ -1,9 +1,7 @@
 # vim:ft=sh
 
 # Set config dir
-if [ -z "$XDG_CONFIG_HOME" ]; then
-	XDG_CONFIG_HOME="${HOME}/.config"
-fi
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
 sh_config="${XDG_CONFIG_HOME}/sh"
 
 # Load environment variables
