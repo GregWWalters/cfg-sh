@@ -1,4 +1,9 @@
-#! /bin/sh
+# POSIX-compliant shell functions
+#
+# These aim to be compatible with zsh, bash, and sh.
+# Some depend on Gnu versions of utilities which are installed with a 'g'
+# prefix, and further work is required to make these work in environments where
+# the Gnu versions are the default.
 
 function shellquote {
 	printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
@@ -110,18 +115,5 @@ findOnPort() (
 function delete-orig {
 	find . -type f -name '*.orig' -delete
 }
-
-function git-is-merged-into {
-	git merge-base --is-ancestor ${1} ${2} && echo "${1} merged into ${2}" || echo "${1} not merged into ${2}"
-}
-
-# Provides the remote's default branch
-function git-remote-default {
-	git remote show ${1:-origin} \
-		| grep 'HEAD' \
-		| cut -d':' -f2 \
-		| sed -e 's/^ *//g' -e 's/ *$//g'
-}
-
 
 # vim: ft=sh
