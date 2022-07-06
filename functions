@@ -1,9 +1,8 @@
 # POSIX-compliant shell functions
 #
 # These aim to be compatible with zsh, bash, and sh.
-# Some depend on Gnu versions of utilities which are installed with a 'g'
-# prefix, and further work is required to make these work in environments where
-# the Gnu versions are the default.
+# Some depend on Gnu versions of utilities which are assumed to be found in the
+# path without a 'g' prefix.
 
 function shellquote {
 	printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
@@ -14,10 +13,10 @@ function testInteger {
 }
 
 function termWidth {
-	if command tput &>/dev/null; then
+	if which tput &>/dev/null; then
 		w=$(tput cols)
-	elif command stty &>/dev/null; then
-		w=$(stty size | cut -w -f2)
+	elif which stty &>/dev/null; then
+		w=$(stty size | cut -d ' ' -f2)
 	else
 		return 1
 	fi
@@ -83,7 +82,7 @@ findOnPort() (
 			port="${tuple[@]:0:1}"
 			pid="${tuple[@]:1:1}"
 			echo "${port} $(ps -o pid,logname,start,command -p "$pid" | tail -n +2)" \
-			| gsed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
+			| sed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
 		done
 	}
 
@@ -97,7 +96,7 @@ findOnPort() (
 	OIFS=$IFS
 	IFS=$'\n' pairs=($( \
 		netstat -vanp tcp \
-		| gawk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" \
+		| awk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" \
 	))
 	IFS=$OIFS
 
