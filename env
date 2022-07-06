@@ -29,3 +29,6 @@ if [ -z ${XDG_CONFIG_HOME+x} ]
 	else export NVM_DIR="${XDG_CONFIG_HOME}/nvm"
 fi
 
+# Homebrew
+if brewbin=$(which brew 2>/dev/null); then eval "$($brewbin shellenv)"; fi
+

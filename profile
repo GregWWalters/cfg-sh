@@ -4,11 +4,11 @@
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
 sh_config="${XDG_CONFIG_HOME}/sh"
 
-# Load environment variables
-[ -s "${sh_config}/env" ] && source "${sh_config}/env"
-
 # Set Path
 [ -s "${sh_config}/path" ] && source "${sh_config}/path"
+
+# Load environment variables
+[ -s "${sh_config}/env" ] && source "${sh_config}/env"
 
 # Aliases
 [ -s "${sh_config}/aliases" ] && source "${sh_config}/aliases"

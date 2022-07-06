@@ -3,7 +3,6 @@
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export PATH="/usr/local/opt/make/libexec/gnubin:$PATH" #gnu binaries
-eval "$(/opt/homebrew/bin/brew shellenv)" # Homebrew
 export PATH="$PATH:$HOME/bin" # user binaries
 export PATH="$PATH:$HOME/.config/git/funcs" # git functions
 export PATH="/usr/local/opt/python/libexec/bin:$PATH" # Brew-installed Python
