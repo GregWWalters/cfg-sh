@@ -2,7 +2,8 @@
 
 export PATH="/usr/local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
-export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH" # gnu binaries
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH" # gnu sed
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH" # gnu coreutils
 export PATH="$PATH:$HOME/bin" # user binaries
 export PATH="$PATH:$HOME/.config/git/funcs" # git functions
 export PATH="/usr/local/opt/python/libexec/bin:$PATH" # Brew-installed Python
