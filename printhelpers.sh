@@ -11,7 +11,7 @@ termWidth() {
 	elif command tput &>/dev/null; then
 		w=$(tput cols)
 	else
-		w=60
+		return 1
 	fi
 	echo $w
 }
@@ -22,7 +22,7 @@ indent() {
 		return 1
 	}
 	space=$1; shift
-	maxWidth=$(termWidth) || width=60
+	maxWidth=$(termWidth) || maxWidth=60
 	width=$(expr $maxWidth - $space)
 	[ $# -gt 0 ] && echo $* | fold -sw $width | pr -to $space
 }
