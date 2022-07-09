@@ -64,6 +64,22 @@ title() {
 	export PROMPT_COMMAND="echo -ne \"\\033]0;$name\\007\""
 }
 
+# Open clipboard contents in a text editor, then save them back to the clipboard.
+# Currently MacOS-only. TODO: add other clipboard systems
+scratch() {
+  filename="/tmp/scratch_$(date -u '+%4Y%m%d%H%M%S')"
+  if [ -s $filename ]; then
+    echo >&2 "scratch file already in use! Save $filename or delete"
+    return 1
+  fi
+  pbpaste > $filename
+  ${EDITOR} $filename
+  pbcopy < $filename
+  rm $filename
+  unset $filename
+  return 0
+}
+
 findOnPort() (
 	function joinWithDelim {
 		if [ $# -lt 3 ]; then print "$2"; return 0; fi
