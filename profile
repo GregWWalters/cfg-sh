@@ -1,21 +1,25 @@
 # vim:ft=sh
 
+# Guard against double-loading the profile, duplicating paths, etc.
+if [ -n "$PROFILE_LOADED" ]; then exit 0; fi
+export PROFILE_LOADED=1;
+
 # Set config dir
-XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
-sh_config="${XDG_CONFIG_HOME}/sh"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
+export SH_CFG_DIR="${SH_CFG_DIR:=${XDG_CONFIG_HOME}/sh}"
 
 # Set Path
-[ -s "${sh_config}/path" ] && source "${sh_config}/path"
+[ -s "${SH_CFG_DIR}/path" ] && source "${SH_CFG_DIR}/path"
 
 # Load environment variables
-[ -s "${sh_config}/env" ] && source "${sh_config}/env"
+[ -s "${SH_CFG_DIR}/env" ] && source "${SH_CFG_DIR}/env"
 
 # Aliases
-[ -s "${sh_config}/aliases" ] && source "${sh_config}/aliases"
+[ -s "${SH_CFG_DIR}/aliases" ] && source "${SH_CFG_DIR}/aliases"
 
 # Functions
-[ -s "${sh_config}/functions" ] && source "${sh_config}/functions"
+[ -s "${SH_CFG_DIR}/functions" ] && source "${SH_CFG_DIR}/functions"
 
 # Set the prompt
-[ -s "${sh_config}/prompt" ] && source "${sh_config}/prompt"
+[ -s "${SH_CFG_DIR}/prompt" ] && source "${SH_CFG_DIR}/prompt"
 
