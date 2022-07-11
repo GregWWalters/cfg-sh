@@ -76,7 +76,7 @@ scratch() {
   ${EDITOR} $filename
   pbcopy < $filename
   rm $filename
-  unset $filename
+  unset filename
   return 0
 }
 
