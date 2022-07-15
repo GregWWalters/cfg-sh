@@ -4,14 +4,20 @@
 # Some depend on Gnu versions of utilities which are assumed to be found in the
 # path without a 'g' prefix.
 
+# shellquote wraps a string in quotes (escaping quotes inside the string) so
+# it can be safely passed to other commands
 function shellquote {
 	printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
 }
 
+# testInteger returns an error status if the argument cannot be used as an
+# integer
 function testInteger {
 	[ -n "$1" -a  "$1" -eq "$1" ] 2>/dev/null
 }
 
+# termWidth outputs the number of columns in the terminal or returns an error
+# status if it cannot
 function termWidth {
 	if which tput &>/dev/null; then
 		w=$(tput cols)
@@ -23,29 +29,36 @@ function termWidth {
 	echo $w
 }
 
+# indent wraps long strings on words and optionally
+# 1) pads the left margin by the first argument, if an integer
+# 2) constrains the text width the the second argument, if an integer
+# Usage: indent [4] [80] $(cat README.txt)
 function indent {
 	if testInteger $1; then space=$1; shift; else space=0; fi
 	if testInteger $1; then width=$1; shift; else p="$*"; width=${#p}; fi
 	[ $# -gt 0 ] && echo $@ | fold -s -w $width | pr -to $space
 }
 
-cmdfu()
-{
-	curl "http://www.commandlinefu.com/commands/matching/$@/$(echo -n $@ \
+# Print command line examples for argument to stdout
+cmdfu() {
+	curl "https://www.commandlinefu.com/commands/matching/$@/$(echo -n $@ \
 		| openssl base64)/YXdr/plaintext" --silent \
 		| sed "s/\(^#.*\)/\x1b[32m\1\x1b[0m/g" \
 		| less -R
 }
 
 
+# Open a google search for arguments in lynx
 google() {
 	lynx -accept-all-cookies "https://www.google.com/search?q=${*// /%20}"
 }
 
+# Open a Wikipedia article for argument in lynx
 wiki() {
 	lynx -accept-all-cookies "http://en.wikipedia.org/wiki/Special:Search?search=${*// /+}"
 }
 
+# Create a histogram of command line history
 histhist() {
 	history \
 		| awk '{print $2}' \
@@ -54,11 +67,13 @@ histhist() {
 		| awk '!max{max=$1;}{r="";i=s=60*$1/max;while(i-->0)r=r"#";printf "%15s %5d %s %s",$2,$1,r,"\n";}'
 }
 
+# csview displays a CSV file in `less` with line numbers and no line wrapping
 csview() {
-	local file="$1"
-	cat "$file" | sed -e 's/,,/, ,/g' | column -s, -t | less -#5 -N -S
+	file="$1"
+	cat "$file" | sed -e 's/,,/, ,/g' | column -s, -t | less -#.1 -N -S
 }
 
+# Change the title displayed by the terminal
 title() {
 	name="$*"
 	export PROMPT_COMMAND="echo -ne \"\\033]0;$name\\007\""
@@ -80,54 +95,70 @@ scratch() {
   return 0
 }
 
+# findOnPort shows the process(es) running on ports given as arguments, or
+# else checks ports 80, 8080, 443, 3000-3009, and 3030
+# Usage: findOnPort [<port> [...]]
 findOnPort() (
+
+	# joinWithDelim is a formatting helper that takes a delimiter as its first
+	# argument and a list of items to join, separated by that delimiter.
 	function joinWithDelim {
+
 		if [ $# -lt 3 ]; then print "$2"; return 0; fi
-		local d=${1-} f=${2-}
+		d=${1-} f=${2-}
 		if shift 2; then
-			printf %s "$f" "${@/#/$d}"
+			# printf %s "$f" "${@/#/$d}"
+			str="$f"
+			for word in $@; do
+				str="$str$d$word"
+			done
+			printf %s "$str"
 		fi
+		return 0
 	}
 
+	# processPairs is a helper that takes the port and PID pairs, delimited by
+	# ':', and returns a table of process information: process ID, username,
+	# process start time, and the command and arguments that started it.
 	function processPairs {
-		local -r columnsRE='^ *([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +(.+?) *$'
-		local -a tuple
+		columnsRE='^ *([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +(.+?) *$'
 		echo "Port;PID;User;Started;Command"
-		for pair in "$@"; do
-			tuple=($(echo "$pair" | tr ':' ' '))
-			port="${tuple[@]:0:1}"
-			pid="${tuple[@]:1:1}"
+		for pair in $@; do
+			port=${pair%%:*}
+			pid=${pair##*:}
 			echo "${port} $(ps -o pid,logname,start,command -p "$pid" | tail -n +2)" \
 			| sed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
 		done
+		return 0
 	}
 
-	local -a ports=( 80 8080 443 '300[0-9]' 3030 )
-	if [ $# -gt 0 ]; then ports=( "$@" ) fi
-	local -r search=$(joinWithDelim '|' $ports)
-	local -r portsRE="\.(${search})$"
+	# Construct a regexp for the list of ports given, or for the default ports
+	ports="80 8080 443 '300[0-9]' 3030"
+	if [ $# -gt 0 ]; then ports=( "$@" ); fi
+	search=$(eval "joinWithDelim '|' $ports")
+	portsRE="\.(${search})$"
 
 	# Get matched ports in use and the PIDs using them as <PORT>:<PID>
-	local -a pairs
-	OIFS=$IFS
-	IFS=$'\n' pairs=($( \
-		netstat -vanp tcp \
-		| awk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" \
-	))
-	IFS=$OIFS
+	pairs=
+	for pair in $( netstat -vanp tcp \
+		| awk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" ); do
+		pairs="$pairs $pair"
+	done
 
 	# Exit here if no searched ports are in use
-	if [ ${#pairs[@]} -eq 0 ]; then
-		echo "No processes found on port(s) $(joinWithDelim ", " $ports)"
+	if [ -z "$pairs" ]; then
+		echo "No processes found on port(s) $(eval "joinWithDelim ', ' $ports")"
 		return 0
 	fi
 
 	# Print the process information per port
 	# (may repeat processes if a process is listening on multiple ports)
-	processPairs $pairs | column -s=';' -t
-) # FIXME: syntax error near unexpected token `)'
+	eval "processPairs $pairs" | column -s=';' -t
+)
 
-function delete-orig {
+# deleteOrig finds and deletes the '.orig' files left behind by Git after a
+# merge conflict
+function deleteOrig {
 	find . -type f -name '*.orig' -delete
 }
 
