@@ -1,7 +1,7 @@
 # printhelpers
 # functions for nicely-formatting text to a terminal
 
-function testInteger {
+testInteger() {
 	[ -n "$1" -a  "$1" -eq "$1" ] 2>/dev/null
 }
 
@@ -27,18 +27,18 @@ indent() {
 	[ $# -gt 0 ] && echo $* | fold -sw $width | pr -to $space
 }
 
-function heading {
+heading() {
 	indent 2 "\033[1m$*\033[0m"
 }
 
-function body {
+body() {
 	while [ $# -gt 0 ]; do
 		indent 6 "$1\n"
 		shift
 	done
 }
 
-function option {
+option() {
 	indent 6 $1
 	shift
 	while [ $# -gt 0 ]; do

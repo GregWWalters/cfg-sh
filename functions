@@ -6,19 +6,19 @@
 
 # shellquote wraps a string in quotes (escaping quotes inside the string) so
 # it can be safely passed to other commands
-function shellquote {
+shellquote() {
 	printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
 }
 
 # testInteger returns an error status if the argument cannot be used as an
 # integer
-function testInteger {
+testInteger() {
 	[ -n "$1" -a  "$1" -eq "$1" ] 2>/dev/null
 }
 
 # termWidth outputs the number of columns in the terminal or returns an error
 # status if it cannot
-function termWidth {
+termWidth() {
 	if which tput &>/dev/null; then
 		w=$(tput cols)
 	elif which stty &>/dev/null; then
@@ -33,7 +33,7 @@ function termWidth {
 # 1) pads the left margin by the first argument, if an integer
 # 2) constrains the text width the the second argument, if an integer
 # Usage: indent [4] [80] $(cat README.txt)
-function indent {
+indent() {
 	if testInteger $1; then space=$1; shift; else space=0; fi
 	if testInteger $1; then width=$1; shift; else p="$*"; width=${#p}; fi
 	[ $# -gt 0 ] && echo $@ | fold -s -w $width | pr -to $space
@@ -41,8 +41,8 @@ function indent {
 
 # Print command line examples for argument to stdout
 cmdfu() {
-	curl "https://www.commandlinefu.com/commands/matching/$@/$(echo -n $@ \
-		| openssl base64)/YXdr/plaintext" --silent \
+	curl "https://www.commandlinefu.com/commands/matching/$@/`echo -n $@ \
+		| openssl base64`/YXdr/plaintext" --silent \
 		| sed "s/\(^#.*\)/\x1b[32m\1\x1b[0m/g" \
 		| less -R
 }
@@ -67,7 +67,7 @@ histhist() {
 		| awk '!max{max=$1;}{r="";i=s=60*$1/max;while(i-->0)r=r"#";printf "%15s %5d %s %s",$2,$1,r,"\n";}'
 }
 
-# csview displays a CSV file in `less` with line numbers and no line wrapping
+# csview displays a CSV file in $(less) with line numbers and no line wrapping
 csview() {
 	file="$1"
 	cat "$file" | sed -e 's/,,/, ,/g' | column -s, -t | less -#.1 -N -S
@@ -102,8 +102,7 @@ findOnPort() (
 
 	# joinWithDelim is a formatting helper that takes a delimiter as its first
 	# argument and a list of items to join, separated by that delimiter.
-	function joinWithDelim {
-
+	joinWithDelim() {
 		if [ $# -lt 3 ]; then print "$2"; return 0; fi
 		d=${1-} f=${2-}
 		if shift 2; then
@@ -120,7 +119,7 @@ findOnPort() (
 	# processPairs is a helper that takes the port and PID pairs, delimited by
 	# ':', and returns a table of process information: process ID, username,
 	# process start time, and the command and arguments that started it.
-	function processPairs {
+	processPairs() {
 		columnsRE='^ *([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +(.+?) *$'
 		echo "Port;PID;User;Started;Command"
 		for pair in $@; do
@@ -140,8 +139,8 @@ findOnPort() (
 
 	# Get matched ports in use and the PIDs using them as <PORT>:<PID>
 	pairs=
-	for pair in $( netstat -vanp tcp \
-		| awk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" ); do
+	for pair in ` netstat -vanp tcp \
+		| awk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" `; do
 		pairs="$pairs $pair"
 	done
 
@@ -158,7 +157,7 @@ findOnPort() (
 
 # deleteOrig finds and deletes the '.orig' files left behind by Git after a
 # merge conflict
-function deleteOrig {
+deleteOrig() {
 	find . -type f -name '*.orig' -delete
 }
 

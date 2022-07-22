@@ -5,9 +5,9 @@ if [ -n "$XDG_CONFIG_HOME" ]; then
 	XDG_CONFIG_HOME="${HOME}/.config"
 fi
 secrets="${XDG_CONFIG_HOME}/sh/.secrets"
-if [ -s "$secrets" ]; then source "$secrets"; fi
+if [ -s "$secrets" ]; then . "$secrets"; fi
 
-export GPG_TTY=`tty`
+export GPG_TTY=$(tty)
 export VISUAL=vim
 export EDITOR=vim
 
