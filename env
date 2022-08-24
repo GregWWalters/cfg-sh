@@ -1,9 +1,7 @@
 # vim:ft=sh
 
 # Store sensitive values like API tokens in .secrets
-if [ -n "$XDG_CONFIG_HOME" ]; then
-	XDG_CONFIG_HOME="${HOME}/.config"
-fi
+if [ -z "$XDG_CONFIG_HOME" ]; then XDG_CONFIG_HOME="${HOME}/.config"; fi
 secrets="${XDG_CONFIG_HOME}/sh/.secrets"
 if [ -s "$secrets" ]; then . "$secrets"; fi
 
@@ -24,9 +22,9 @@ export GOPRIVATE=github.com/parkhub/*,github.com/gregwwalters/*
 export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
 
 # Set Node Version Manager home
-if [ -z ${XDG_CONFIG_HOME+x} ]
-	then export NVM_DIR="${HOME}/.nvm"
-	else export NVM_DIR="${XDG_CONFIG_HOME}/nvm"
+if [ -n ${XDG_CONFIG_HOME+x} ]
+  then export NVM_DIR="${XDG_CONFIG_HOME}/nvm"
+  else export NVM_DIR="${HOME}/.nvm"
 fi
 
 # Homebrew

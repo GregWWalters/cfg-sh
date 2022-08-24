@@ -4,28 +4,21 @@
 # dotfiles git alias
 alias cfg='/usr/bin/env git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'
 
-alias ls='ls -ALhFXh --color' # classify files in colour, sort by type
-alias dir='ls -AXh --color=auto --format=vertical'
-alias vdir='ls -aXh --color=auto --format=long'
+# set behavior for ls
+alias ls='gls -AhX --color=auto --time-style=long-iso'
+alias lsl='gls -AChlX --color=auto --time-style=long-iso'
 
 # Temporary fix for tmux colors
 alias tmux="tmux -2"
-
-# alias gpg="gpg1"
 
 # Default to human readable figures
 # alias df='df -h'
 # alias du='du -h'
 
-# alias vim='nvim'
 # alias rtv='RTV_BROWSER=lynx rtv --enable-media'
 alias rg='rg -n'
 alias ts='date +%s'
 alias ds='date -u "+%Y-%m-%dT%H:%M:%SZ"'
 alias utc="date -u -I'seconds'"
-alias please='sudo '
-alias really='sudo fc -e : -1'
-alias bofh='telnet towel.blinkenlights.nl 666'
-alias view='vim -R'
 
 alias dc='docker compose'

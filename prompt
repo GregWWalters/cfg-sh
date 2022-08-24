@@ -1,24 +1,6 @@
-#! /bin/sh
+# prompt
+# this should be sourced only for interactive shells and after system configs
+
+export PS1="\n\[\e[00;36m\]\u@\h:\[\e[0m\]\[\e[00;32m\]\w\[\e[0m\]\[\e[00;36m\] \D{%Y-%m-%d} \A\[\e[0m\]\n\[\e[1;37m\]\$\[\e[0m\] "
+
 # vim:ft=sh
-
-# Git
-. "${HOME}/.config/git/git-prompt.sh"
-thisShell=$(ps -o args= -p $$ | grep -m 1 -o -E '\w{0,5}sh')
-
-case $thisShell in
-	bash)
-		source "$HOME/.config/bash/prompt"
-		;;
-	zsh)
-		source "$HOME/.config/zsh/prompt"
-		;;
-	sh)
-		# do nothing
-		;;
-	\?)
-		echo "unregognized shell \"$thisShell\""
-		;;
-esac
-
-
-
