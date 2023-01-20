@@ -53,39 +53,26 @@ if [ -z "$PROFILE_LOADED" ]; then
       ;;
   esac
 
-  # Set Path
-  [ -s "${SH_CFG_DIR}/path" ] && . "${SH_CFG_DIR}/path"
+  # Splash screen
+  [ -s "${SH_CFG_DIR}/splash" ] && sh "${SH_CFG_DIR}/splash"
 
-  # Load environment variables
-  [ -s "${SH_CFG_DIR}/env" ] && . "${SH_CFG_DIR}/env"
-
-  # Aliases
-  [ -s "${SH_CFG_DIR}/aliases" ] && . "${SH_CFG_DIR}/aliases"
-
-  # Functions
-  [ -s "${SH_CFG_DIR}/functions" ] && . "${SH_CFG_DIR}/functions"
-
-  # Set the prompt
-  # [ -s "${SH_CFG_DIR}/prompt" ] && . "${SH_CFG_DIR}/prompt"
-  # this needs to be sourced later
-
-  # Load nvm (Node Version Manager)
-  if [ -n ${NVM_DIR+x} ]; then
-
-    case $SHELL_TYPE in
-      bash|zsh)
-        # This loads nvm bash_completion
-        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-        ;;
-    esac
-
-    # Only load NVM when needed so not to slow down shell startup
-    nvm() {
-      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-      nvm "$@"
-    }
-  fi
+  # Prompt must be sourced later from "${SH_CFG_DIR}/prompt"
 
   export PLATFORM SHELL_TYPE XDG_DATA_HOME XDG_CONFIG_HOME SH_CFG_DIR
 fi
+
+# Set Path
+[ -s "${SH_CFG_DIR}/path" ] && . "${SH_CFG_DIR}/path"
+
+# Load environment variables
+[ -s "${SH_CFG_DIR}/env" ] && . "${SH_CFG_DIR}/env"
+
+# Scripts
+[ -s "${SH_CFG_DIR}/scripts" ] && . "${SH_CFG_DIR}/scripts"
+
+# Aliases
+[ -s "${SH_CFG_DIR}/aliases" ] && . "${SH_CFG_DIR}/aliases"
+
+# Functions
+[ -s "${SH_CFG_DIR}/functions" ] && . "${SH_CFG_DIR}/functions"
 

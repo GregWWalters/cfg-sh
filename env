@@ -27,6 +27,17 @@ if [ -n ${XDG_CONFIG_HOME+x} ]
   else export NVM_DIR="${HOME}/.nvm"
 fi
 
+# Ruby
+export LDFLAGS="-L/usr/local/opt/ruby/lib"
+export CPPFLAGS="-I/usr/local/opt/ruby/include"
+export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
+
+# Change fzf's default from `find`
+if which fzf &>/dev/null; then
+  export FZF_DEFAULT_COMMAND='rg --files'
+  export FZF_DEFAULT_OPTS='--height=40% --min-height=8 --layout=default --border=rounded --tabstop=2 -0 -1'
+fi
+
 # Homebrew
 if brewbin=$(which brew 2>/dev/null); then eval "$($brewbin shellenv)"; fi
 

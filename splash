@@ -1,14 +1,13 @@
 #! /bin/sh
-# ASCII art splash screen to be loaded after .bashrc
+# ASCII art splash screen to be loaded after .profile
 
-art_dir="${HOME}/Documents/ASCII_art"
+art_dir="${XDG_CONFIG_HOME}/ascii_splash"
 
 if [ -d $art_dir ]; then
-	art=$(ls $art_dir | gsort -R | tail -1)
-	echo ""
-	cat "$art_dir/$art"
-	echo ""
-	echo ""
+  splash_exec="$art_dir/splash.sh"
+  if [ -x "$splash_exec" ]; then
+    $splash_exec
+  fi
 fi
 
 # vim:ft=sh

@@ -1,0 +1,51 @@
+# vim:ft=sh
+
+# Guard against double-loading the profile, duplicating paths, etc.
+if [ -z "$SCRIPTS_LOADED" ]; then
+  SCRIPTS_LOADED=1;
+
+  # Load nvm (Node Version Manager)
+  if [ -n ${NVM_DIR+x} ]; then
+
+    case $SHELL_TYPE in
+      bash|zsh)
+        # This loads nvm bash_completion
+        [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+        ;;
+    esac
+
+    # Only load NVM when needed so not to slow down shell startup
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+      nvm() {
+        source "$NVM_DIR/nvm.sh"
+        nvm "$@"
+      }
+    fi
+
+    # Load chruby (ruby version manager)
+    chruby_script="/usr/local/opt/chruby/share/chruby/chruby.sh"
+    if [ -s "$chruby_script" ]; then
+      source "$chruby_script"
+
+      # Load ruby version from file
+      version_file="$HOME/.ruby-version"
+      if [ -s "$version_file" ]; then
+        if { read -r version <"$dir/.ruby-version"; } 2>/dev/null || [[ -n "$version" ]]; then
+          chruby "$version"
+        fi
+      fi
+
+      # Enable automatically setting ruby version by .ruby-version file
+      chruby_auto_script="/usr/local/opt/chruby/share/chruby/auto.sh"
+      if [ -s "$chruby_auto_script" ]; then
+        chruby_auto() {
+          source "$chruby_auto_script"
+          chruby_auto
+        }
+      fi
+    fi
+
+  fi
+
+fi
+

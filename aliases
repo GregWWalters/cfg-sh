@@ -1,12 +1,26 @@
 # Aliases
 # vim:ft=sh
 
+# set some protection when deleting files
+alias rm='rm -I'
+
 # dotfiles git alias
 alias cfg='/usr/bin/env git --git-dir=$HOME/.dotfiles.git --work-tree=$HOME'
 
 # set behavior for ls
-alias ls='gls -AhX --color=auto --time-style=long-iso'
-alias lsl='gls -AChlX --color=auto --time-style=long-iso'
+if which gls &>/dev/null; then # if GNU ls installed as gls
+  alias ls='gls -AhX --color=auto --time-style=long-iso'
+  alias lsl='gls -AChlX --color=auto --time-style=long-iso'
+# elif [ "$PLATFORM" = 'bsd' ]; then
+  # TODO: MacOS options
+# elif [ "$PLATFORM" = 'linux' ];
+  # TODO: Asume gnutils?
+fi
+
+if which dir &>/dev/null; then
+  alias dir='dir -AhX --color=auto --time-style=long-iso'
+  alias vdir='vdir -AhlX --color=auto --time-style=long-iso'
+fi
 
 # Temporary fix for tmux colors
 alias tmux="tmux -2"
@@ -15,10 +29,19 @@ alias tmux="tmux -2"
 # alias df='df -h'
 # alias du='du -h'
 
-# alias rtv='RTV_BROWSER=lynx rtv --enable-media'
+# RipGrep show line numbers by default
 alias rg='rg -n'
+
+# Generate timestamps
 alias ts='date +%s'
 alias ds='date -u "+%Y-%m-%dT%H:%M:%SZ"'
 alias utc="date -u -I'seconds'"
 
-alias dc='docker compose'
+# docker compose
+alias dcmp='docker compose'
+
+# Use homebrew ctags
+if which brew &>/dev/null; then
+  prefix=$(brew --prefix)
+  if [ -x "$prefix/bin/ctags" ]; then alias ctags="$prefix/bin/ctags"; fi
+fi
