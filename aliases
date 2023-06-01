@@ -17,13 +17,17 @@ if which gls &>/dev/null; then # if GNU ls installed as gls
   # TODO: Asume gnutils?
 fi
 
+# guard against accidentally overwriting
+alias mv='mv -n'
+alias cp='cp -n'
+
 if which dir &>/dev/null; then
   alias dir='dir -AhX --color=auto --time-style=long-iso'
   alias vdir='vdir -AhlX --color=auto --time-style=long-iso'
 fi
 
 # Temporary fix for tmux colors
-alias tmux="tmux -2"
+alias tmux='tmux -2'
 
 # Default to human readable figures
 # alias df='df -h'
@@ -39,6 +43,12 @@ alias utc="date -u -I'seconds'"
 
 # docker compose
 alias dcmp='docker compose'
+
+# use python3 for python
+alias python='/usr/local/bin/python3'
+alias pip='/usr/local/bin/pip3'
+alias python2='/usr/local/bin/python'
+alias pip2='/usr/local/bin/pip'
 
 # Use homebrew ctags
 if which brew &>/dev/null; then

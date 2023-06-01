@@ -99,66 +99,73 @@ scratch() {
 # else checks ports 80, 8080, 443, 3000-3009, and 3030
 # Usage: findOnPort [<port> [...]]
 findOnPort() (
+  shopt -s expand_aliases
 
-	# joinWithDelim is a formatting helper that takes a delimiter as its first
-	# argument and a list of items to join, separated by that delimiter.
-	joinWithDelim() {
-		if [ $# -lt 3 ]; then print "$2"; return 0; fi
-		d=${1-} f=${2-}
-		if shift 2; then
-			# printf %s "$f" "${@/#/$d}"
-			str="$f"
-			for word in $@; do
-				str="$str$d$word"
-			done
-			printf %s "$str"
-		fi
-		return 0
-	}
+  # this function requires GNU awk. If installed as 'gawk', alias it.
+  if which gawk &>/dev/null; then alias awk=gawk; fi
 
-	# processPairs is a helper that takes the port and PID pairs, delimited by
-	# ':', and returns a table of process information: process ID, username,
-	# process start time, and the command and arguments that started it.
-	processPairs() {
-		columnsRE='^ *([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +(.+?) *$'
-		echo "Port;PID;User;Started;Command"
-		for pair in $@; do
-			port=${pair%%:*}
-			pid=${pair##*:}
-			echo "${port} $(ps -o pid,logname,start,command -p "$pid" | tail -n +2)" \
-			| sed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
-		done
-		return 0
-	}
+  # this function requires GNU sed. If installed as 'gsed', alias it.
+  if which gsed &>/dev/null; then alias sed=gsed; fi
 
-	# Construct a regexp for the list of ports given, or for the default ports
-	ports="80 8080 443 '300[0-9]' 3030"
-	if [ $# -gt 0 ]; then ports=( "$@" ); fi
-	search=$(eval "joinWithDelim '|' $ports")
-	portsRE="\.(${search})$"
+  # joinWithDelim is a formatting helper that takes a delimiter as its first
+  # argument and a list of items to join, separated by that delimiter.
+  joinWithDelim() {
+    if [ $# -lt 3 ]; then print "$2"; return 0; fi
+    d=${1-} f=${2-}
+    if shift 2; then
+      # printf %s "$f" "${@/#/$d}"
+      str="$f"
+      for word in $@; do
+        str="$str$d$word"
+      done
+      printf %s "$str"
+    fi
+    return 0
+  }
 
-	# Get matched ports in use and the PIDs using them as <PORT>:<PID>
-	pairs=
-	for pair in ` netstat -vanp tcp \
-		| awk "BEGIN{OFS=\":\"}{ match(\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\$9 }" `; do
-		pairs="$pairs $pair"
-	done
+  # processPairs is a helper that takes the port and PID pairs, delimited by
+  # ':', and returns a table of process information: process ID, username,
+  # process start time, and the command and arguments that started it.
+  processPairs() {
+    columnsRE='^ *([^ ]+) +([^ ]+) +([^ ]+) +([^ ]+) +(.+?) *$'
+    echo "Port;PID;User;Started;Command"
+    for pair in $@; do
+      port=${pair%%:*}
+      pid=${pair##*:}
+      echo "${port} $(ps -o pid,logname,start,command -p "$pid" | tail -n +2)" \
+        | sed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
+      done
+      return 0
+    }
 
-	# Exit here if no searched ports are in use
-	if [ -z "$pairs" ]; then
-		echo "No processes found on port(s) $(eval "joinWithDelim ', ' $ports")"
-		return 0
-	fi
+  # Construct a regexp for the list of ports given, or for the default ports
+  ports="80 8080 443 '300[0-9]' 3030"
+  if [ $# -gt 0 ]; then ports=( "$@" ); fi
+  search=$(eval "joinWithDelim '|' $ports")
+  portsRE="\.(${search})$"
 
-	# Print the process information per port
-	# (may repeat processes if a process is listening on multiple ports)
-	eval "processPairs $pairs" | column -s=';' -t
+  # Get matched ports in use and the PIDs using them as <PORT>:<PID>
+  pairs=
+  for pair in ` netstat -vanp tcp \
+    | awk "BEGIN{OFS=\":\"}{ match(\\\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\\\$9 }" `; do
+      pairs="$pairs $pair"
+    done
+
+  # Exit here if no searched ports are in use
+  if [ -z "$pairs" ]; then
+    echo "No processes found on port(s) $(eval "joinWithDelim ', ' $ports")"
+    return 0
+  fi
+
+  # Print the process information per port
+  # (may repeat processes if a process is listening on multiple ports)
+  eval "processPairs $pairs" | column -s=';' -t
 )
 
 # deleteOrig finds and deletes the '.orig' files left behind by Git after a
 # merge conflict
 deleteOrig() {
-	find . -type f -name '*.orig' -delete
+  find . -type f -name '*.orig' -delete
 }
 
 # vim: ft=sh
