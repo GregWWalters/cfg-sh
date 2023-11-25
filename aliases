@@ -13,8 +13,10 @@ if which gls &>/dev/null; then # if GNU ls installed as gls
   alias lsl='gls -AChlX --color=auto --time-style=long-iso'
 # elif [ "$PLATFORM" = 'bsd' ]; then
   # TODO: MacOS options
-# elif [ "$PLATFORM" = 'linux' ];
-  # TODO: Asume gnutils?
+elif [ "$PLATFORM" = 'linux' ]; then
+  # Assume Gnu coreutils
+  alias ls='ls -AhX --color=auto --time-style=long-iso'
+  alias lsl='ls -AChlX --color=auto --time-style=long-iso'
 fi
 
 # guard against accidentally overwriting
@@ -50,7 +52,7 @@ alias pip='/usr/local/bin/pip3'
 alias python2='/usr/local/bin/python'
 alias pip2='/usr/local/bin/pip'
 
-# Use homebrew ctags
+# Use homebrew ctags on MacOS
 if which brew &>/dev/null; then
   prefix=$(brew --prefix)
   if [ -x "$prefix/bin/ctags" ]; then alias ctags="$prefix/bin/ctags"; fi
