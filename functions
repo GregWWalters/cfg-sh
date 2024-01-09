@@ -99,13 +99,13 @@ scratch() {
 # else checks ports 80, 8080, 443, 3000-3009, and 3030
 # Usage: findOnPort [<port> [...]]
 findOnPort() (
-  shopt -s expand_aliases
-
   # this function requires GNU awk. If installed as 'gawk', alias it.
-  if which gawk &>/dev/null; then alias awk=gawk; fi
+  _awk='awk'
+  if which gawk &>/dev/null; then _awk=gawk; fi
 
   # this function requires GNU sed. If installed as 'gsed', alias it.
-  if which gsed &>/dev/null; then alias sed=gsed; fi
+  _sed='sed'
+  if which gsed &>/dev/null; then _sed=gsed; fi
 
   # joinWithDelim is a formatting helper that takes a delimiter as its first
   # argument and a list of items to join, separated by that delimiter.
@@ -133,7 +133,7 @@ findOnPort() (
       port=${pair%%:*}
       pid=${pair##*:}
       echo "${port} $(ps -o pid,logname,start,command -p "$pid" | tail -n +2)" \
-        | sed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
+        | $_sed -E "s/${columnsRE}/\1;\2;\3;\4;\5/"
       done
       return 0
     }
@@ -147,7 +147,7 @@ findOnPort() (
   # Get matched ports in use and the PIDs using them as <PORT>:<PID>
   pairs=
   for pair in ` netstat -vanp tcp \
-    | awk "BEGIN{OFS=\":\"}{ match(\\\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\\\$9 }" `; do
+    | $_awk "BEGIN{OFS=\":\"}{ match(\\\$4, /$portsRE/, c); if( length(c) > 0 ) print c[1],\\\$9 }" `; do
       pairs="$pairs $pair"
     done
 
