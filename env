@@ -2,7 +2,7 @@
 
 # Store sensitive values like API tokens in .secrets
 if [ -z "$XDG_CONFIG_HOME" ]; then XDG_CONFIG_HOME="${HOME}/.config"; fi
-secrets="${XDG_CONFIG_HOME}/sh/.secrets"
+secrets="${XDG_CONFIG_HOME}/.secrets"
 if [ -s "$secrets" ]; then . "$secrets"; fi
 
 export GPG_TTY=$(tty)
