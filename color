@@ -1,0 +1,73 @@
+fg_red() {
+  print "\u001b[31m"$*"\u001b[39m"
+}
+
+fg_ylw() {
+  print "\u001b[33m"$*"\u001b[39m"
+}
+
+fg_grn() {
+  print "\u001b[32m"$*"\u001b[39m"
+}
+
+fg_cyn() {
+  print "\u001b[36m"$*"\u001b[39m"
+}
+
+fg_blu() {
+  print "\u001b[34m"$*"\u001b[39m"
+}
+
+fg_mgn() {
+  print "\u001b[35m"$*"\u001b[39m"
+}
+
+fg_wht() {
+  print "\u001b[37m"$*"\u001b[39m"
+}
+
+fg_blk() {
+  print "\u001b[30m"$*"\u001b[39m"
+}
+
+fg_rst() {
+  print "\u001b[39m"
+}
+
+bg_red() {
+  print "\u001b[41m"$*"\u001b[49m"
+}
+
+bg_ylw() {
+  print "\u001b[43m"$*"\u001b[49m"
+}
+
+bg_grn() {
+  print "\u001b[42m"$*"\u001b[49m"
+}
+
+bg_cyn() {
+  print "\u001b[46m"$*"\u001b[49m"
+}
+
+bg_blu() {
+  print "\u001b[44m"$*"\u001b[49m"
+}
+
+bg_mgn() {
+  print "\u001b[45m"$*"\u001b[49m"
+}
+
+bg_wht() {
+  print "\u001b[47m"$*"\u001b[49m"
+}
+
+bg_blk() {
+  print "\u001b[40m"$*"\u001b[49m"
+}
+
+bg_rst() {
+  print "\u001b[49m"
+}
+
+# vim: ft=sh
