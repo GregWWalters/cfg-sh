@@ -15,7 +15,7 @@ if [ -z "$PATH_LOADED" ]; then
   # If a directory in $HOME/bin contains an executable, check whether it's
   # already in $PATH and, if not, append it.
   for d in $(find $HOME/bin \
-    -maxdepth 2 -type f -perm /111 \
+    -maxdepth 2 -type f -perm -111 \
     -exec dirname {} ';'); do
     if [ "${PATH#*$d}" = "$PATH" ]; then
       PATH="$PATH:$d"

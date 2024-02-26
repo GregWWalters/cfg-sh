@@ -44,7 +44,10 @@ alias ds='date -u "+%Y-%m-%dT%H:%M:%SZ"'
 alias utc="date -u -I'seconds'"
 
 # docker compose
+alias dc='docker compose'
 alias dcmp='docker compose'
+alias compose='docker compose'
+alias cmps='docker compose'
 
 # use python3 for python
 alias python='/usr/local/bin/python3'
