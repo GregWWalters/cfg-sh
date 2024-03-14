@@ -168,4 +168,19 @@ deleteOrig() {
   find . -type f -name '*.orig' -delete
 }
 
+# with takes a text file defining environment variables to use and a command
+# to run without setting those variables in the current session environment
+with() {
+  if [ $# -lt 2 ]; then
+    print "requires an environment file and a command\n" >2;
+  fi
+  envFile=$1; shift;
+
+  state="$(set +o)"         # store shell opts
+  set -a                    # set opt to export variables by default when set
+  source $envFile           # set variables from file
+  $*                        # run command
+  set +vx; eval "$oldstate" # silently restore previous shell opts
+}
+
 # vim: ft=sh
