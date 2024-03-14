@@ -61,6 +61,15 @@ if [ -z "$PROFILE_LOADED" ]; then
   export PLATFORM SHELL_TYPE XDG_DATA_HOME XDG_CONFIG_HOME SH_CFG_DIR
 fi
 
+# Homebrew
+if brewbin=$(which brew 2>/dev/null); then
+	eval "$($brewbin shellenv)"
+elif [ -x '/opt/homebrew/bin/brew' ]; then
+	eval $(/opt/homebrew/bin/brew shellenv)
+elif [ -x '/usr/local/bin/brew' ]; then
+	eval $(/usr/local/bin/brew shellenv)
+fi
+
 # Set Path
 [ -s "${SH_CFG_DIR}/path" ] && . "${SH_CFG_DIR}/path"
 
