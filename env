@@ -24,7 +24,7 @@ export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
 # Set Node Version Manager home
 if [ -n ${XDG_CONFIG_HOME+x} ]
   then export NVM_DIR="${XDG_CONFIG_HOME}/nvm"
-  else export NVM_DIR="${HOME}/.nvm"
+  else export NVM_DIR="${HOME}/.config/.nvm"
 fi
 
 # Ruby
@@ -38,6 +38,8 @@ if which fzf &>/dev/null; then
   export FZF_DEFAULT_OPTS='--height=40% --min-height=8 --layout=default --border=rounded --tabstop=2 -0 -1'
 fi
 
-# Homebrew
-if brewbin=$(which brew 2>/dev/null); then eval "$($brewbin shellenv)"; fi
+if srchl=$(which src-hilite-lesspipe.sh); then
+  export LESSOPEN="| $srchl %s"
+  export LESS=' -R '
+fi
 
