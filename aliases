@@ -49,11 +49,13 @@ alias dcmp='docker compose'
 alias compose='docker compose'
 alias cmps='docker compose'
 
-# use python3 for python
-alias python=$(which python3)
-alias pip=$(which pip3)
-alias python2=$(which python2)
-# alias pip2=$(which pip2)
+# default to python3
+if which python3 &>/dev/null; then
+  alias python='python3'
+  if which pip3 &>/dev/null; then
+    alias pip='pip3'
+  fi
+fi
 
 # Use homebrew ctags on MacOS
 if which brew &>/dev/null; then

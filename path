@@ -6,14 +6,35 @@
 if [ -z "$PATH_LOADED" ]; then
   export PATH_LOADED=1;
 
-  # Executables
+  # Homebrew-Installed Executables
   if [ -n "$HOMEBREW_PREFIX" ]; then
-    PATH="$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"        # gnu coreutils
-    PATH="$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"          # gnu sed
-    PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"             # gnu grep
-    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"        # gnu man pages
+    PATH="$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"     # gnu coreutils
+    PATH="$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"       # gnu sed
+    PATH="$HOMEBREW_PREFIX/opt/grep/libexec/gnubin:$PATH"          # gnu grep
+    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"     # gnu man pages
+    if [ -d "$HOMEBREW_PREFIX/opt/libpq/bin" ]; then
+      PATH="$HOMEBREW_PREFIX/opt/libpq/bin:$PATH"                  # Postgres CLI
+    fi
+    if [ -d "$HOMEBREW_PREFIX/opt/rustup" ]; then
+      PATH="/opt/homebrew/opt/rustup:$PATH"                        # Rust toolchain
+    fi
   fi
-  PATH="$HOME/.cargo/bin:$PATH"                               # Rust bins
+
+  # Language Toolchain-Installed Executables
+  if [ -d "$HOME/.cargo" ]; then PATH="$HOME/.cargo/bin:$PATH"; fi # Rust bins
+  if [ -d "$HOME/go" ]; then PATH="$HOME/go/bin:$PATH"; fi         # Go bins
+
+  # Prefer Volta binaries
+  if [ -d $HOME/.volta/bin ]; then
+    PATH="$HOME/.volta/bin:$PATH"
+  fi
+
+  # User Executables
+  if [ -d "$HOME/bin" ]; then; PATH="$HOME/bin:$PATH"; fi
+  if [ -d "$HOME/.local/bin" ]; then PATH="$HOME/bin:$PATH"; fi
+  if [ -d "$XDG_CONFIG_HOME/git/funcs" ]; then
+    PATH="$PATH:$XDG_CONFIG_HOME/git/funcs"                        # git functions
+  fi
   PATH="$HOME/.local/bin:$PATH"                               # user bins
 
   # $HOME/bin/**
@@ -52,10 +73,9 @@ if [ -z "$PATH_LOADED" ]; then
     done
   fi
 
-  PATH="$PATH:$XDG_CONFIG_HOME/git/funcs"                        # git functions
 
   # Man pages
-  MANPATH="$MANPATH:$HOME/man"                                # user man pages
+  MANPATH="$MANPATH:$HOME/man"
 
   export PATH MANPATH
 fi

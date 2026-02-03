@@ -1,7 +1,8 @@
 # vim:ft=sh
 
-# Store sensitive values like API tokens in .secrets
 if [ -z "$XDG_CONFIG_HOME" ]; then XDG_CONFIG_HOME="${HOME}/.config"; fi
+
+# Store sensitive values like API tokens in .secrets
 secrets="${XDG_CONFIG_HOME}/.secrets"
 if [ -s "$secrets" ]; then . "$secrets"; fi
 
@@ -12,7 +13,6 @@ export EDITOR=vim
 # BROWSER
 export BROWSER=lynx
 export LYNX_CFG=~/.config/lynx/lynx.cfg
-# export RTV_BROWSER=/Applications/Firefox.app
 
 # Set GO variables
 export GOPATH="${HOME}/go"

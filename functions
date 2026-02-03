@@ -180,7 +180,7 @@ with() {
   set -a                    # set opt to export variables by default when set
   source $envFile           # set variables from file
   $*                        # run command
-  set +vx; eval "$oldstate" # silently restore previous shell opts
+  set +vx; eval "$state"    # silently restore previous shell opts
 }
 
 # vim: ft=sh
