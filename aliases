@@ -50,10 +50,10 @@ alias compose='docker compose'
 alias cmps='docker compose'
 
 # use python3 for python
-alias python='/usr/local/bin/python3'
-alias pip='/usr/local/bin/pip3'
-alias python2='/usr/local/bin/python'
-alias pip2='/usr/local/bin/pip'
+alias python=$(which python3)
+alias pip=$(which pip3)
+alias python2=$(which python2)
+# alias pip2=$(which pip2)
 
 # Use homebrew ctags on MacOS
 if which brew &>/dev/null; then

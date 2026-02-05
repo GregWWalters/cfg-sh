@@ -61,6 +61,12 @@ if [ -z "$PROFILE_LOADED" ]; then
   export PLATFORM SHELL_TYPE XDG_DATA_HOME XDG_CONFIG_HOME SH_CFG_DIR
 fi
 
+# Get SWAYSOCK if running inside tmux
+swaymsg(){
+  export SWAYSOCK=$XDG_RUNTIME_DIR/sway-ipc.$UID.$(pgrep -x sway).sock
+  command swaymsg "$@"
+}
+
 # Homebrew
 if brewbin=$(which brew 2>/dev/null); then
 	eval "$($brewbin shellenv)"

@@ -14,6 +14,7 @@ if [ -z "$PATH_LOADED" ]; then
     MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"        # gnu man pages
   fi
   PATH="$HOME/.cargo/bin:$PATH"                               # Rust bins
+  PATH="$HOME/.local/bin:$PATH"                               # user bins
 
   # If a directory in $HOME/bin contains an executable, check whether it's
   # already in $PATH and, if not, append it.
