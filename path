@@ -16,15 +16,29 @@ if [ -z "$PATH_LOADED" ]; then
   PATH="$HOME/.cargo/bin:$PATH"                               # Rust bins
   PATH="$HOME/.local/bin:$PATH"                               # user bins
 
-  # If a directory in $HOME/bin contains an executable, check whether it's
-  # already in $PATH and, if not, append it.
-  for d in $(find $HOME/bin \
-    -maxdepth 2 -type f -perm -111 \
-    -exec dirname {} ';'); do
-    if [ "${PATH#*$d}" = "$PATH" ]; then
-      PATH="$PATH:$d"
-    fi
-  done
+  # $HOME/bin/**
+  if [ -d "$HOME/bin" ]; then
+    PATH="$HOME/bin:$PATH"
+    for d in $(find $HOME/bin \
+      -maxdepth 2 -type f -perm -111 \
+      -exec dirname {} ';'); do
+      if [ "${PATH#*$d}" = "$PATH" ]; then
+        PATH="$PATH:$d"
+      fi
+    done
+  fi
+
+  # $HOME/.local/bin/**
+  if [ -d "$HOME/.local/bin:$PATH" ]; then
+    PATH="$HOME/.local/bin:$PATH"
+    for d in $(find $HOME/.local/bin \
+      -maxdepth 2 -type f -perm -111 \
+      -exec dirname {} ';'); do
+      if [ "${PATH#*$d}" = "$PATH" ]; then
+        PATH="$PATH:$d"
+      fi
+    done
+  fi
 
   PATH="$PATH:$XDG_CONFIG_HOME/git/funcs"                        # git functions
 
