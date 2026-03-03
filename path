@@ -29,9 +29,21 @@ if [ -z "$PATH_LOADED" ]; then
   fi
 
   # $HOME/.local/bin/**
-  if [ -d "$HOME/.local/bin:$PATH" ]; then
+  if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
     for d in $(find $HOME/.local/bin \
+      -maxdepth 2 -type f -perm -111 \
+      -exec dirname {} ';'); do
+      if [ "${PATH#*$d}" = "$PATH" ]; then
+        PATH="$PATH:$d"
+      fi
+    done
+  fi
+
+  # $HOME/go/bin/**
+  if [ -d "$HOME/go/bin" ]; then
+    PATH="$HOME/go/bin:$PATH"
+    for d in $(find $HOME/go/bin \
       -maxdepth 2 -type f -perm -111 \
       -exec dirname {} ';'); do
       if [ "${PATH#*$d}" = "$PATH" ]; then
