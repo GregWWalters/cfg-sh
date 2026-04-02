@@ -91,3 +91,5 @@ fi
 # Functions
 [ -s "${SH_CFG_DIR}/functions" ] && . "${SH_CFG_DIR}/functions"
 
+# Integrations
+[ -s "${SH_CFG_DIR}/integrations" ] && . "${SH_CFG_DIR}/integrations"

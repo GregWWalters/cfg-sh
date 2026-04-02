@@ -14,6 +14,9 @@ export EDITOR=vim
 export BROWSER=lynx
 export LYNX_CFG=~/.config/lynx/lynx.cfg
 
+# Rust cargo env
+. "$HOME/.cargo/env"
+
 # Set GO variables
 export GOPATH="${HOME}/go"
 export GOPRIVATE=github.com/parkhub/*,github.com/gregwwalters/*

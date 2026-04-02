@@ -62,3 +62,6 @@ if which brew &>/dev/null; then
   prefix=$(brew --prefix)
   if [ -x "$prefix/bin/ctags" ]; then alias ctags="$prefix/bin/ctags"; fi
 fi
+
+# use vimx if installed
+if which vimx &>/dev/null; then alias vim='vimx'; fi
