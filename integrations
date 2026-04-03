@@ -1,9 +1,9 @@
 # Shell Integrations
 
 # 1Password Plugins
-op-plugins="${XDG_CONFIG_HOME}/op/plugins.sh"
-if [ -s "$op-plugins" ]; then
-  source "$op-plugins"
+op_plugins="${XDG_CONFIG_HOME}/op/plugins.sh"
+if [ -s "$op_plugins" ]; then
+  source "$op_plugins"
 fi
 
 # vim:ft=sh
